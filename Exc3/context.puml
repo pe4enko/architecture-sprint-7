@@ -1,0 +1,39 @@
+@startuml Basic Sample
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+SHOW_PERSON_OUTLINE()
+
+Person(клиент, "Клиент")
+Person(собственник, "Собственник")
+
+
+Person(менеджер, "Менеджер", "Работает с клиентами и объектами недвижимости, администрирует online сделки")
+Person(бизнес_аналитик, "Бизнес аналитик", "Оптимизирует процессы и развивает прикладные бизнес-системы. Администрирует системы")
+Person(бухгалтер, "Бухгалтер", "Ведет бухгалтерский учет")
+Person(аналитик, "Аналитик BI", "Анализирует данные и готовит отчетность")
+
+
+System(propDevelopment, "PropDevelopment")
+System_Ext(gos_organs, "Государственные регистрационные органы", "Отвечают за регистрационные действия с объектами недвижимости")
+System_Ext(payment_system, Платежная система, "Провайдер Online-платежей")
+System_Ext(resources_system, "Поставщик ресурсов ЖКХ")
+
+Rel(собственник, propDevelopment, "Uses", "HTTPS")
+Rel(клиент, propDevelopment, "Uses", "HTTPS")
+
+Rel_Right(менеджер, propDevelopment, "Uses", "HTTPS")
+Rel_Right(бизнес_аналитик, propDevelopment, "Uses", "HTTPS")
+Rel_Right(бухгалтер, propDevelopment, "Uses", "HTTPS")
+Rel_Right(аналитик, propDevelopment, "Uses", "HTTPS")
+
+Rel_Up(gos_organs, propDevelopment, "СМЭВ", "SOAP")
+Rel_Right(propDevelopment, payment_system, " ")
+Rel_Right(propDevelopment, resources_system, " ")
+
+System_Boundary(PartnerPlatform, "Платформа партнера") {
+    Container(intercom_service, "Домофонный сервис", "C#, ASP.NET Core 2.1 MVC", "Включает функции классического видеодомофона — открытие по звонку. Также есть возможность распознавать пользователей по биометрии (по лицу) и автоматически открывать дверь, если им разрешён доступ в дом.")
+    Container(barrier_service, "Шлагбаумный сервис", "C#, ASP.NET Core 2.1 MVC", "Включает функции классического управления шлагбаумом и автоматически открывает доступ, если распознаёт номера автомобилей, которым въезд разрешён.")
+}
+
+Rel_Down(propDevelopment, PartnerPlatform, "СМЭВ", "SOAP")
+@enduml
